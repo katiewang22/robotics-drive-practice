@@ -16,6 +16,6 @@ public class AutoPath2 extends SequentialCommandGroup {
   /** Creates a new AutoPath2. */
   public AutoPath2(DriveSubsystem driveSubsystem) {
     addCommands(new AutoMove(driveSubsystem, -20), new AutoTurn(driveSubsystem, -30), 
-                new AutoMove(driveSubsystem, 30), new AutoTurn(driveSubsystem, 30))
+                new AutoMove(driveSubsystem, 30), new AutoTurn(driveSubsystem, 30));
   }
 }

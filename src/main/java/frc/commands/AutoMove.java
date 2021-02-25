@@ -46,6 +46,6 @@ public class AutoMove extends CommandBase {
     double distanceDriven = driveSubsystem.distanceTravelledInMeters() - start_distance_meters;
     double positionError = Math.abs(target_distance - distanceDriven);
 
-    return (positionError < 0.2);
+    return (positionError < 0.01);
   }
 }

@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.commands.AutoPaths.AutoPath1;
 import frc.robot.subsystems.DriveSubsystem;
 
 /**
@@ -18,13 +20,13 @@ import frc.robot.subsystems.DriveSubsystem;
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private Command m_autoSelected;
+  private final SendableChooser<Command> m_chooser = new SendableChooser<>();
   public static RobotContainer m_robotContainer;
   private DriveSubsystem driveSubsystem = m_robotContainer.driveSubsystem;
   private Command m_autonomousCommand;
 
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
+  //SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -36,10 +38,11 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);*/
     m_robotContainer = new RobotContainer();
-    m_robotContainer.driveSubsystem.setModePercentVoltage();
-    m_robotContainer.driveSubsystem.resetEncoders();
-    m_robotContainer.driveSubsystem.zeroYaw();
-    m_chooser.setDefaultOption("Default Auto", new AutoPath0);
+    RobotContainer.driveSubsystem.setModePercentVoltage();
+    RobotContainer.driveSubsystem.resetEncoders();
+    RobotContainer.driveSubsystem.zeroYaw();
+    m_chooser.addOption("Go straight, then turn", new AutoPath1(driveSubsystem));
+    SmartDashboard.putData("Autonomous Chooser", m_chooser);
   }
 
   /**
@@ -50,7 +53,9 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -64,7 +69,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
+    m_autonomousCommand = m_chooser.getSelected();
+
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
   }
@@ -72,7 +81,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
+    /*switch (m_autoSelected) {
       case kCustomAuto:
         // Put custom auto code here
         break;
@@ -80,7 +89,7 @@ public class Robot extends TimedRobot {
       default:
         // Put default auto code here
         break;
-    }
+    }*/
   }
 
   /** This function is called once when teleop is enabled. */
